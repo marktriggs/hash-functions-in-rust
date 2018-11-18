@@ -11,8 +11,8 @@ make
 temp=$(mktemp)
 iterations=1000
 
-binaries=(sha1 sha256)
-system_equivs=(sha1sum sha256sum)
+binaries=(sha1 sha256 sha512)
+system_equivs=(sha1sum sha256sum sha512sum)
 
 for i in ${!binaries[@]}; do
     binary=${binaries[i]}
