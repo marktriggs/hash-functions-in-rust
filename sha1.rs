@@ -21,14 +21,7 @@ fn preprocess(message: &[u8]) -> Vec<u8> {
 
 fn leftrotate(n: u32, pos: usize) -> u32 {
     assert!(pos <= 32);
-
-    let mut result = n;
-
-    for _ in 0..pos {
-        result = (result >> 31) | (result << 1)
-    }
-
-    result
+    (n << pos) | (n >> (32 - pos))
 }
 
 fn sha1(input: &[u8]) -> String {

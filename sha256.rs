@@ -3,14 +3,7 @@ use std::io::Read;
 
 fn rightrotate(n: u32, pos: usize) -> u32 {
     assert!(pos <= 32);
-
-    let mut result = n;
-
-    for _ in 0..pos {
-        result = (result >> 1) | ((result & 1) << 31);
-    }
-
-    result
+    (n >> pos) | (n << (32 - pos))
 }
 
 fn preprocess(message: &[u8]) -> Vec<u8> {
