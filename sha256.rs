@@ -17,11 +17,6 @@ const K: &[u32] = &[
 
 
 
-fn rightrotate(n: u32, pos: usize) -> u32 {
-    assert!(pos <= 32);
-    (n >> pos) | (n << (32 - pos))
-}
-
 fn preprocess(message: &[u8]) -> Vec<u8> {
     let message_length: u64 = message.len() as u64 * 8;
     let mut result = message.to_owned();
@@ -65,8 +60,8 @@ fn sha256(input: &[u8]) -> String {
         w.resize(64, 0);
 
         for i in 16..64 {
-            let s0 = rightrotate(w[i - 15], 7) ^ rightrotate(w[i - 15], 18) ^ (w[i - 15] >> 3);
-            let s1 = rightrotate(w[i - 2], 17) ^ rightrotate(w[i - 2], 19) ^ (w[i - 2] >> 10);
+            let s0 = w[i - 15].rotate_right(7) ^ w[i - 15].rotate_right(18) ^ (w[i - 15] >> 3);
+            let s1 = w[i - 2].rotate_right(17) ^ w[i - 2].rotate_right(19) ^ (w[i - 2] >> 10);
             w[i] = w[i - 16]
                 .wrapping_add(s0)
                 .wrapping_add(w[i - 7])
@@ -83,14 +78,14 @@ fn sha256(input: &[u8]) -> String {
         let mut h = h7;
 
         for i in 0..64 {
-            let s1 = rightrotate(e, 6) ^ rightrotate(e, 11) ^ rightrotate(e, 25);
+            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
             let ch = (e & f) ^ (!e & g);
             let temp1 = h
                 .wrapping_add(s1)
                 .wrapping_add(ch)
                 .wrapping_add(K[i])
                 .wrapping_add(w[i]);
-            let s0 = rightrotate(a, 2) ^ rightrotate(a, 13) ^ rightrotate(a, 22);
+            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
             let maj = (a & b) ^ (a & c) ^ (b & c);
             let temp2 = s0.wrapping_add(maj);
 

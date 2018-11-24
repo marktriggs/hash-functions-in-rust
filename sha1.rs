@@ -19,10 +19,6 @@ fn preprocess(message: &[u8]) -> Vec<u8> {
     result
 }
 
-fn leftrotate(n: u32, pos: usize) -> u32 {
-    assert!(pos <= 32);
-    (n << pos) | (n >> (32 - pos))
-}
 
 fn sha1(input: &[u8]) -> String {
     let mut h0 = 0x67452301u32;
@@ -46,7 +42,7 @@ fn sha1(input: &[u8]) -> String {
         for i in 16..80 {
             w.push(0);
 
-            w[i] = leftrotate(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1)
+            w[i] = (w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16]).rotate_left(1)
         }
 
         let mut a = h0;
@@ -73,7 +69,7 @@ fn sha1(input: &[u8]) -> String {
                 k = 0xCA62C1D6;
             }
 
-            let mut temp = leftrotate(a, 5)
+            let mut temp = a.rotate_left(5)
                 .wrapping_add(f)
                 .wrapping_add(e)
                 .wrapping_add(k)
@@ -81,7 +77,7 @@ fn sha1(input: &[u8]) -> String {
 
             e = d;
             d = c;
-            c = leftrotate(b, 30);
+            c = b.rotate_left(30);
             b = a;
             a = temp;
         }

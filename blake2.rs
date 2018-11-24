@@ -33,25 +33,20 @@ fn pad(buffer: &mut Vec<u8>, size: usize) {
     buffer.extend(vec![0; padding].iter());
 }
 
-fn rightrotate(n: u64, pos: usize) -> u64 {
-    assert!(pos <= 64);
-    (n >> pos) | (n << (64 - pos))
-}
-
 fn mix(v: &mut Vec<u64>,
        a: usize, b: usize, c: usize, d: usize,
        x: u64, y: u64) {
     v[a] = v[a].wrapping_add(v[b]).wrapping_add(x);
-    v[d] = rightrotate((v[d] ^ v[a]) as u64, 32);
+    v[d] = ((v[d] ^ v[a]) as u64).rotate_right(32);
 
     v[c] = v[c].wrapping_add(v[d]);
-    v[b] = rightrotate((v[b] ^ v[c]) as u64, 24);
+    v[b] = ((v[b] ^ v[c]) as u64).rotate_right(24);
 
     v[a] = v[a].wrapping_add(v[b]).wrapping_add(y);
-    v[d] = rightrotate((v[d] ^ v[a]) as u64, 16);
+    v[d] = ((v[d] ^ v[a]) as u64).rotate_right(16);
 
     v[c] = v[c].wrapping_add(v[d]);
-    v[b] = rightrotate((v[b] ^ v[c]) as u64, 63);
+    v[b] = ((v[b] ^ v[c]) as u64).rotate_right(63);
 }
 
 fn compress(h: &mut Vec<u64>, chunk: &Vec<u8>, t: u128, is_last_block: bool) {

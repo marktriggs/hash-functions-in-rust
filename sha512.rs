@@ -32,11 +32,6 @@ const K: &[u64] = &[
  ];
 
 
-fn rightrotate(n: u64, pos: usize) -> u64 {
-    assert!(pos <= 64);
-    (n >> pos) | (n << (64 - pos))
-}
-
 fn preprocess(message: &[u8]) -> Vec<u8> {
     let message_length: u128 = message.len() as u128 * 8;
     let mut result = message.to_owned();
@@ -83,8 +78,8 @@ fn sha512(input: &[u8]) -> String {
         w.resize(80, 0);
 
         for i in 16..80 {
-            let s0 = rightrotate(w[i - 15], 1) ^ rightrotate(w[i - 15], 8) ^ (w[i - 15] >> 7);
-            let s1 = rightrotate(w[i - 2], 19) ^ rightrotate(w[i - 2], 61) ^ (w[i - 2] >> 6);
+            let s0 = w[i - 15].rotate_right(1) ^ w[i - 15].rotate_right(8) ^ (w[i - 15] >> 7);
+            let s1 = w[i - 2].rotate_right(19) ^ w[i - 2].rotate_right(61) ^ (w[i - 2] >> 6);
             w[i] = w[i - 16]
                 .wrapping_add(s0)
                 .wrapping_add(w[i - 7])
@@ -101,14 +96,14 @@ fn sha512(input: &[u8]) -> String {
         let mut h = h7;
 
         for i in 0..80 {
-            let s1 = rightrotate(e, 14) ^ rightrotate(e, 18) ^ rightrotate(e, 41);
+            let s1 = e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
             let ch = (e & f) ^ (!e & g);
             let temp1 = h
                 .wrapping_add(s1)
                 .wrapping_add(ch)
                 .wrapping_add(K[i])
                 .wrapping_add(w[i]);
-            let s0 = rightrotate(a, 28) ^ rightrotate(a, 34) ^ rightrotate(a, 39);
+            let s0 = a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
             let maj = (a & b) ^ (a & c) ^ (b & c);
             let temp2 = s0.wrapping_add(maj);
 

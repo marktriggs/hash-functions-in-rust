@@ -1,12 +1,7 @@
 use std::fs::File;
 use std::io::Read;
 
-fn leftrotate(n: u32, pos: usize) -> u32 {
-    assert!(pos <= 32);
-    (n << pos) | (n >> (32 - pos))
-}
-
-const SHIFTS: &[usize] = &[
+const SHIFTS: &[u32] = &[
     7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9,
     14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15,
     21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
@@ -87,7 +82,7 @@ fn md5(input: &[u8]) -> String {
             a = d;
             d = c;
             c = b;
-            b = b.wrapping_add(leftrotate(f, SHIFTS[i]));
+            b = b.wrapping_add(f.rotate_left(SHIFTS[i]));
         }
 
         a0 = a0.wrapping_add(a);
