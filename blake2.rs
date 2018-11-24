@@ -98,6 +98,10 @@ fn compress(h: &mut Vec<u64>, chunk: &Vec<u8>, t: u128, is_last_block: bool) {
     }
 }
 
+fn le_bytes(input: u64) -> Vec<u8> {
+    (0..8).map(|shift| (input >> shift * 8) as u8).collect()
+}
+
 fn blake2(input: &[u8], key: Option<&[u8]>, hashlen: usize) -> String {
     if hashlen < 1 || hashlen > 64 {
         panic!("Requested hash must be between 1 and 64 bytes");
@@ -151,25 +155,11 @@ fn blake2(input: &[u8], key: Option<&[u8]>, hashlen: usize) -> String {
 
     compress(&mut h, &m, bytes_compressed, true);
 
-    // Result ← first cbHashLen bytes of little endian state vector h
-    let mut result = String::new();
-
-    let mut generated_bytes: Vec<u8> = Vec::with_capacity(h.len() * 8);
-
-    for n in h {
-        // u64 -> Little endian bytes
-        let mut acc = n;
-        for _ in 0..8 {
-            generated_bytes.push((acc & 0xFFu64) as u8);
-            acc = acc >> 8;
-        }
-    }
-
-    for b in &generated_bytes[0..hashlen] {
-        result.push_str(&format!("{:02x}", b));
-    }
-
-    result
+    h.iter()
+        .flat_map(|n| le_bytes(*n))
+        .take(hashlen)
+        .map(|b| format!("{:02x}", b))
+        .collect()
 }
 
 fn main() {
