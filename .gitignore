@@ -1,5 +1,6 @@
 /sha1
 /sha256
 /sha512
+/md4
 /md5
 /blake2
