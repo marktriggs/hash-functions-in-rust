@@ -1,4 +1,5 @@
 all:
+	rustc ripemd160.rs
 	rustc blake2.rs
 	rustc md4.rs
 	rustc md5.rs
